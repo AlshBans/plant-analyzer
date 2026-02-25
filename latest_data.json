@@ -1,0 +1,13 @@
+{
+    "deviceID": "NodeMCU_001",
+    "temperature": 31.8,
+    "humidity": 67,
+    "soilValue": 1024,
+    "lightStatus": "Bright",
+    "relay": "OFF",
+    "ip": "10.229.170.7",
+    "mac": "A8:48:FA:FF:E0:3E",
+    "signalStrength": -35,
+    "latency_ms": 88,
+    "uptime_sec": 1010
+}

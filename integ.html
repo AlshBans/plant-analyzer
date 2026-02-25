@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IoT Dashboard</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f8fff6; margin: 40px; }
+  h1 { color: #2b7a0b; text-align: center; }
+  table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+  th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+  th { background-color: #4CAF50; color: white; }
+  tr:nth-child(even) { background-color: #f2f2f2; }
+
+  /* Button styling */
+  .nav-btn {
+    display: block;
+    width: 200px;
+    margin: 10px auto;
+    padding: 12px;
+    font-size: 16px;
+    color: white;
+    background-color: #2b7a0b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .nav-btn:hover { background-color: #3da61a; }
+</style>
+</head>
+<body>
+<h1>🌱 IoT Device Dashboard</h1>
+
+<!-- New Plant Analyzer button -->
+<button class="nav-btn" onclick="window.location.href='index.html'">Plant Analyser</button>
+
+<table id="deviceTable">
+  <tr>
+    <th>Device ID</th>
+    <th>IP Address</th>
+    <th>Temperature (°C)</th>
+    <th>Humidity (%)</th>
+    <th>Light Intensity</th>
+    <th>Light</th>
+    <th>Last Seen</th>
+    <th>RSSI</th>
+    <th>Current Time</th>
+
+  </tr>
+  <tr>
+    <td>NodeMCU_001</td>
+    <td>192.168.1.12</td>
+    <td>28.6</td>
+    <td>65</td>
+    <td>512</td>
+    <td>Bright</td>
+    <td>10:15:42 AM</td>
+  </tr>
+</table>
+
+<p style="text-align:center; margin-top:40px; color:gray;"></p>
+
+<!-- Simulated data script (optional) -->
+<script>
+async function updateTable() {
+  try {
+    const res = await fetch("http://10.229.170.37//PLANT-ANALYZER/latest_data.json?nocache=" + new Date().getTime());
+    const data = await res.json();
+
+    const table = document.getElementById('deviceTable');
+    
+    // If table header doesn't exist, recreate it
+    if (!table.querySelector('th')) {
+      table.innerHTML = `<tr>
+        <th>Device ID</th>
+        <th>IP Address</th>
+        <th>Temperature (°C)</th>
+        <th>Humidity (%)</th>
+        <th>Soil</th>
+        <th>Light</th>
+        <th>Relay</th>
+        <th>Signal (dBm)</th>
+        <th>Last Seen</th>
+      </tr>`;
+    }
+
+    // Remove old row if it exists (keep header)
+    const oldRow = table.querySelector('tr:nth-child(2)');
+    if (oldRow) oldRow.remove();
+
+    // Create a new live row
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+      <td>${data.deviceID}</td>
+      <td>${data.ip}</td>
+      <td>${data.temperature}</td>
+      <td>${data.humidity}</td>
+      <td>${data.soilValue}</td>
+      <td>${data.lightStatus}</td>
+      <td>${data.relay}</td>
+      <td>${data.signalStrength}</td>
+      <td>${new Date().toLocaleTimeString()}</td>
+    `;
+
+    table.appendChild(newRow);
+
+  } catch (err) {
+    console.error("⚠️ Error loading live data:", err);
+  }
+}
+
+// Update every 2 seconds
+setInterval(updateTable, 10);
+updateTable();
+</script>
+</body>
+</html>
